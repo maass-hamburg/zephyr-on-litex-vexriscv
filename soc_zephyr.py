@@ -16,6 +16,8 @@ from litex.soc.cores.gpio import GPIOOut, GPIOIn
 
 from liteeth.phy.mii import LiteEthPHYMII
 
+from litei2c import LiteI2C
+
 # Helpers ------------------------------------------------------------------------------------------
 
 def platform_request_all(platform, name):
@@ -52,6 +54,7 @@ def SoCZephyr(soc_cls, **kwargs):
             "spiflash_core":   24, # addr: 0xe000c000
             "spiflash_phy":    25, # addr: 0xe000c800
             "watchdog0":  26, # addr: 0xe000d000
+            "litei2c":    27, # addr: 0xe000d800
         }}
 
         interrupt_map = {**soc_cls.interrupt_map, **{
@@ -90,6 +93,12 @@ def SoCZephyr(soc_cls, **kwargs):
 
         def add_i2c(self):
             self.submodules.i2c0 = I2CMaster(self.platform.request("i2c", 0))
+        
+        def add_litei2c(self):
+            self.litei2c = LiteI2C(
+                sys_clk_freq=self.sys_clk_freq,
+                pads=self.platform.request("i2c", 0)
+            )
 
         def add_i2s(self):
             self.platform.add_extension(arty_platform._i2s_pmod_io)
