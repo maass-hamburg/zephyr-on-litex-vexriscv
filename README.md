@@ -63,6 +63,8 @@ Build options
 | --sys-clk-freq | System clock frequency |
 | --with_spi | Enable SPI |
 | --with_spi_flash | Enable SPI flash |
+| --with-sdcard | Enable SD card via [LiteSDCard](https://github.com/enjoy-digital/litesdcard) |
+| --sdcard-adapter | Select SD card PMOD adapter |
 | --with_i2c | Enable I2C (bitbang driver) |
 | --with_litei2c | Enable I2C via [LiteI2C](https://github.com/litex-hub/litei2c) |
 | --with_pwm | Enable PWM |

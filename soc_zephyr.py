@@ -51,12 +51,14 @@ def SoCZephyr(soc_cls, **kwargs):
             "spiflash":   24, # addr: 0xe000c000
             "watchdog0":  26, # addr: 0xe000d000
             "litei2c":    27, # addr: 0xe000d800
+            "sdcard":     29, # addr: 0xe000e000
         }}
 
         interrupt_map = {**soc_cls.interrupt_map, **{
             "timer0":     1,
             "uart":       2,
             "ethmac":     3,
+            "sdcard":     5,
             "i2s_rx":     6,
             "i2s_tx":     7,
             "watchdog0":  8,

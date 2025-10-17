@@ -84,6 +84,8 @@ def main():
     parser.add_argument("--spi-data-width", type=int, default=8,      help="SPI data width (maximum transfered bits per xfer, Arty target only)")
     parser.add_argument("--spi-clk-freq",   type=int, default=1e6,    help="SPI clock frequency (Arty target only)")
     parser.add_argument("--spi_flash_rate", default="1:1", help="SPI flash rate, can be 1:1 or 1:2 (Arty target only)")
+    parser.add_argument("--with-sdcard", action="store_true", help="Enable SDCard support.")
+    parser.add_argument("--sdcard-adapter", default="digilent", help="SDCard PMOD adapter (digilent or numato).")
     parser.add_argument("--with_mmcm", action="store_true", help="Enable mmcm (Arty target only)")
     parser.add_argument("--with_watchdog", action="store_true", help="Enable watchdog")
     parser.add_argument("--watchdog_width", type=int, default=32, help="Watchdog width")
@@ -106,6 +108,7 @@ def main():
         args.with_pwm = True
         args.with_mmcm = True
         args.with_watchdog = True
+        args.with_sdcard = True
 
     if args.board == "all":
         board_names = list(supported_boards.keys())
@@ -163,6 +166,10 @@ def main():
                     print("Adding mmcm implicitly, cause i2s core needs special clk signals")
                     soc.add_mmcm(board.mmcm_freq)
                 soc.add_i2s()
+            if args.with_sdcard:
+                from litex_boards.platforms import digilent_arty
+                soc.platform.add_extension(digilent_arty._numato_sdcard_pmod_io if args.sdcard_adapter == "numato" else digilent_arty._sdcard_pmod_io)
+                soc.add_sdcard()
 
         build_dir = os.path.join("build", board.bitstream_name)
 
