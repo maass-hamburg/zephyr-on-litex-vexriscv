@@ -40,7 +40,6 @@ def SoCZephyr(soc_cls, **kwargs):
             "spi":        4, # addr: 0xe0002000
             "timer0":     5, # addr: 0xe0002800
             "sdram":      6, # addr: 0xe0003000
-            "uartphy":    7, # addr: 0xe0004000
             "mmcm":       9, # addr: 0xe0004800
             "i2c0":       10, # addr: 0xe0005000
             "rgb_led_r0": 14, # addr: 0xe0007000
