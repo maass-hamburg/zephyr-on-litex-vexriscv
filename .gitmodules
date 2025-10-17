@@ -52,3 +52,6 @@
 [submodule "third_party/litei2c"]
 	path = third_party/litei2c
 	url = https://github.com/litex-hub/litei2c
+[submodule "third_party/litesdcard"]
+	path = third_party/litesdcard
+	url = https://github.com/enjoy-digital/litesdcard.git
