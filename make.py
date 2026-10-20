@@ -62,8 +62,8 @@ def main():
     description += "Available boards:\n"
     for name in supported_boards.keys():
         description += "- " + name + "\n"
-    from litex.soc.integration.soc import LiteXSoCArgumentParser
-    parser = LiteXSoCArgumentParser(description="LiteX SoC on Arty A7 and SDI-MIPI Bridge")
+    from litex.build.parser import LiteXArgumentParser
+    parser = LiteXArgumentParser(description="LiteX SoC on Arty A7 and SDI-MIPI Bridge")
     parser.add_argument("--toolchain", default="symbiflow", help="FPGA toolchain - vivado, symbiflow or oxide (yosys+nextpnr).")
     parser.add_argument("--board", required=True, help="FPGA board")
     parser.add_argument("--build", action="store_true", help="build bitstream")

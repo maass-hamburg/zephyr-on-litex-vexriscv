@@ -11,7 +11,6 @@ from litex.soc.cores.gpio import *
 from litex.soc.cores.pwm import PWM
 from litex.soc.cores.spi import SPIMaster
 from litex.soc.cores.bitbang import I2CMaster
-from litex_boards.platforms import digilent_arty as arty_platform
 from litex.soc.cores.gpio import GPIOOut, GPIOIn
 
 from liteeth.phy.mii import LiteEthPHYMII
@@ -40,7 +39,6 @@ def SoCZephyr(soc_cls, **kwargs):
             "spi":        4, # addr: 0xe0002000
             "timer0":     5, # addr: 0xe0002800
             "sdram":      6, # addr: 0xe0003000
-            "uartphy":    7, # addr: 0xe0004000
             "mmcm":       9, # addr: 0xe0004800
             "i2c0":       10, # addr: 0xe0005000
             "rgb_led_r0": 14, # addr: 0xe0007000
@@ -94,7 +92,8 @@ def SoCZephyr(soc_cls, **kwargs):
             self.submodules.i2c0 = I2CMaster(self.platform.request("i2c", 0))
 
         def add_i2s(self):
-            self.platform.add_extension(arty_platform._i2s_pmod_io)
+            from litex_boards.extensions.pmod import PmodI2S2
+            self.platform.add_extension(PmodI2S2("pmoda"))
             i2s_mem_size = 0x40000
             # i2s rx
             self.submodules.i2s_rx = S7I2S(
@@ -104,8 +103,7 @@ def SoCZephyr(soc_cls, **kwargs):
                 concatenate_channels=False,
                 toolchain=kwargs["toolchain"]
             )
-            self.add_memory_region("i2s_rx", self.mem_map_zephyr["i2s_rx"], i2s_mem_size, type="io")
-            self.add_wb_slave(self.mem_regions["i2s_rx"].origin, self.i2s_rx.bus, i2s_mem_size)
+            self.bus.add_slave("i2s_rx", self.i2s_rx.bus, SoCRegion(origin=self.mem_map_zephyr["i2s_rx"], size=i2s_mem_size, cached=False))
             # i2s tx
             self.submodules.i2s_tx = S7I2S(
                 pads=self.platform.request("i2s_tx"),
@@ -115,8 +113,7 @@ def SoCZephyr(soc_cls, **kwargs):
                 concatenate_channels=False,
                 toolchain=kwargs["toolchain"]
             )
-            self.add_memory_region("i2s_tx", self.mem_map_zephyr["i2s_tx"], i2s_mem_size, type="io")
-            self.add_wb_slave(self.mem_regions["i2s_tx"].origin, self.i2s_tx.bus, i2s_mem_size)
+            self.bus.add_slave("i2s_tx", self.i2s_tx.bus, SoCRegion(origin=self.mem_map_zephyr["i2s_tx"], size=i2s_mem_size, cached=False))
 
             self.comb += self.platform.request("i2s_rx_mclk").eq(self.cd_mmcm_clkout["i2s_rx"].clk)
             self.comb += self.platform.request("i2s_tx_mclk").eq(self.cd_mmcm_clkout["i2s_tx"].clk)
