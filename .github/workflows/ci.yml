@@ -17,19 +17,13 @@ jobs:
           sudo apt-get install -y libboost-dev libboost-filesystem-dev libboost-thread-dev libboost-program-options-dev libboost-iostreams-dev libboost-dev libboost-system-dev libboost-python-dev libboost-filesystem-dev
           sudo apt-get install -y gcc-riscv64-unknown-elf
         
-      - name: Install OSS CAD tools
-        run: |
-          curl -s https://api.github.com/repos/YosysHQ/oss-cad-suite-build/releases/latest \
-            | grep "browser_download_url.*oss-cad-suite-linux-x64-" \
-            | cut -d : -f 2,3 \
-            | tr -d \" \
-            | wget -qi -
-          tar -xf oss-cad-suite-linux-x64-*.tgz
-          rm -v oss-cad-suite-linux-x64-*.tgz
+      - name: Install OSS CAD Suite
+        uses: YosysHQ/setup-oss-cad-suite@v4
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
         
       - name: Build bitstream
         run: |
-          source oss-cad-suite/environment
           source ./init
           pip3 install packaging meson ninja
           echo $PATH
